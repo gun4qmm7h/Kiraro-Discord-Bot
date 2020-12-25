@@ -33,9 +33,5 @@ from discord.ext import commands
 
 
 
-
-# SortaABot token
-# bot.run('')
-
 # kiraro token
 bot.run('Token')
