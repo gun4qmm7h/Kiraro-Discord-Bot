@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Kiraro import bot, is_us
+from Kiraro import bot, is_us, version
 import json
 
 
@@ -37,7 +37,8 @@ async def help(ctx):
 {prefix}Start_Rank: Start the text and voice ranking
 {prefix}Aliases: Show aliases for commands
 ```
-if you what to send us a Suggest to us type >request
+if you what to send us a Suggest or report a bug to us type >request
+Version {version}
 ''',
         color=discord.Color.blue())
     await ctx.send(embed=embed)
@@ -100,3 +101,17 @@ async def status_help(ctx):
             color=discord.Color.blue()
         )
         await ctx.send(embed=embed)
+
+
+@bot.command(aliases=['changel', 'clogs', 'update'])
+async def change_logs(ctx):
+    embed = discord.Embed(
+        title="Change Logs",
+        description=F'''
+    Added a cool down to text ranking so a user only gets xp per text after 5 sec
+    Added a Change Log command (This)
+    Fix the text and voice ranking so they are more reliable
+    ***Version {version}***
+    ''',
+        color=discord.Color.blue())
+    await ctx.send(embed=embed)

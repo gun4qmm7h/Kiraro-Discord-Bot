@@ -3,11 +3,12 @@ from discord.ext import commands
 import hashlib
 import asyncio
 import json
-import os
-import sys
 import time
+import random
 
 cooldown = {}
+version = 1.1
+rand_xp = random.randint(15, 25)
 
 
 def hash_lib(string):
@@ -86,8 +87,11 @@ def human_format(num):
 async def Cooldown(message, time_sleep):
     global cooldown
     if not bool(cooldown.get(message.author.mention)):
-        cooldown[message.author.mention] = time.time() + time_sleep
-        return False
+        if cooldown.get(message.author.mention) is None:
+            cooldown[message.author.mention] = time.time() + time_sleep
+            return True
+        else:
+            return False
     elif cooldown[message.author.mention] <= time.time():
         cooldown.pop(message.author.mention)
         return True

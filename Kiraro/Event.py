@@ -18,23 +18,37 @@ async def on_ready():
     with open("Files/Live_Leaderboard.json") as f:
         livelb = json.load(f)
 
+    with open("Files/TextRanking.json") as f:
+        text = json.load(f)
+
+    with open("Files/VoiceRanking.json") as f:
+        voice = json.load(f)
+
     for guild in bot.guilds:
         if str(guild.id) not in prefixes:
             prefixes[str(guild.id)] = ">"
 
         if str(guild.id) not in stop_start:
-            stop_start[guild.id] = {}
-            server = stop_start[guild.id]
+            stop_start[str(guild.id)] = {}
+            server = stop_start[str(guild.id)]
             server.update({"text": True,
                            "voice": True})
 
         if str(guild.id) not in livelb:
-            livelb[guild.id] = {}
-            lb_server = livelb[guild.id]
+            livelb[str(guild.id)] = {}
+            lb_server = livelb[str(guild.id)]
             lb_server.update({"text": False,
                               "voice": False,
                               "txt_message": [],
                               "vc_message": []})
+
+        if str(guild.id) not in text:
+            text[str(guild.id)] = {}
+
+        if str(guild.id) not in voice:
+            voice[str(guild.id)] = {}
+            voice_rank = voice[str(guild.id)]
+            voice_rank.update({"users": []})
 
     with open("Files/Prefix.json", "w") as f:
         json.dump(prefixes, f, indent=4)
@@ -44,6 +58,12 @@ async def on_ready():
 
     with open("Files/Live_Leaderboard.json", "w") as f:
         json.dump(livelb, f, indent=4)
+
+    with open("Files/TextRanking.json", "w") as f:
+        json.dump(text, f, indent=4)
+
+    with open("Files/VoiceRanking.json", "w") as f:
+        json.dump(voice, f, indent=4)
 
     print(F"Bot is ready as {bot.user}. Servers: {len(bot.guilds)}. Date: {time.asctime()}")
 
@@ -69,7 +89,6 @@ async def on_ready():
         await asyncio.sleep(30)
 
 
-
 # Add a default prefix for every server
 @bot.event
 async def on_guild_join(guild):
@@ -82,22 +101,31 @@ async def on_guild_join(guild):
     with open("Files/Live_Leaderboard.json") as f:
         livelb = json.load(f)
 
+    with open("Files/TextRanking.json") as f:
+        text = json.load(f)
+
+    with open("Files/VoiceRanking.json") as f:
+        voice = json.load(f)
 
     prefixes[str(guild.id)] = ">"
 
-
-    stop_start[ctx.guild.id] = {}
-    server = stop_start[guild.id]
+    stop_start[str(ctx.guild.id)] = {}
+    server = stop_start[str(guild.id)]
     server.update({"text": True,
                    "voice": True})
 
-    livelb[guild.id] = {}
-    lb_server = livelb[guild.id]
+    livelb[str(guild.id)] = {}
+    lb_server = livelb[str(guild.id)]
     lb_server.update({"text": False,
                       "voice": False,
                       "txt_message": [],
                       "vc_message": []})
 
+    if str(guild.id) not in text:
+        text[str(guild.id)].update({str(guild.id): {}})
+
+    if str(guild.id) not in voice:
+        voice[str(guild.id)].update({str(guild.id): {}})
 
     with open("Files/Prefix.json", "w") as f:
         json.dump(prefixes, f, indent=4)
@@ -107,6 +135,12 @@ async def on_guild_join(guild):
 
     with open("Files/Live_Leaderboard.json", "w") as f:
         json.dump(livelb, f, indent=4)
+
+    with open("Files/TextRanking.json", "w") as f:
+        json.dump(text, f, indent=4)
+
+    with open("Files/VoiceRanking.json", "w") as f:
+        json.dump(voice, f, indent=4)
 
 
 # Removes the prefix for a server that removed the bot
@@ -121,12 +155,21 @@ async def on_guild_remove(guild):
     with open("Files/Live_Leaderboard.json") as f:
         livelb = json.load(f)
 
+    with open("Files/TextRanking.json") as f:
+        text = json.load(f)
+
+    with open("Files/VoiceRanking.json") as f:
+        voice = json.load(f)
+
     prefixes.pop(str(guild.id))
 
     stop_start.pop(str(guild.id))
 
     livelb.pop(str(guild.id))
 
+    text.pop(str(guild.id))
+
+    voice.pop(str(guild.id))
 
     with open("Files/Prefix.json", "w") as f:
         json.dump(prefixes, f, indent=4)
@@ -136,3 +179,9 @@ async def on_guild_remove(guild):
 
     with open("Files/Live_Leaderboard.json", "w") as f:
         json.dump(livelb, f, indent=4)
+
+    with open("Files/TextRanking.json", "w") as f:
+        json.dump(text, f, indent=4)
+
+    with open("Files/VoiceRanking.json", "w") as f:
+        json.dump(voice, f, indent=4)

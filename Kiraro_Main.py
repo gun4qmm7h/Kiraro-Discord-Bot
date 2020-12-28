@@ -1,7 +1,10 @@
 """
 Author: Jawad
-Version: 1.0
-2020-12-20
+Version: 1.1
+2020-12-26
+Added cooldown to the ranking but in a way so the cooldown is not in effect if you ping the bot
+Added a cooldown funcion to the __init__.py file
+auto add server id's to files when added to servers
 Kiraro discord bot
 """
 

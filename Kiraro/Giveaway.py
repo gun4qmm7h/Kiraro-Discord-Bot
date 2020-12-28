@@ -34,14 +34,13 @@ async def giveaway(ctx, times, num_of_users, *, giveaway_msg=None):
             winner = random.choice(people)
             all_winners.append(winner)
             people.remove(winner)
-        await ctx.send(F"random: {', '.join(all_winners)}, Not enough people reacted so the number will be off {people_num}/{num_of_users}")
+        await ctx.send(F"{', '.join(all_winners)}, Not enough people reacted so the number will be off {people_num}/{num_of_users}")
     else:
-        print(len(people), num_of_users)
         for x in range(int(num_of_users)):
             winner = random.choice(people)
             all_winners.append(winner)
             people.remove(winner)
-            await ctx.send(F"random: {', '.join(all_winners)}")
+        await ctx.send(F":drum: The winners are :drum: {', '.join(all_winners)}")
 
 
 @giveaway.error

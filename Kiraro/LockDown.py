@@ -30,14 +30,5 @@ async def lockdown_error(ctx, error):
         )
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
-    elif isinstance(error, commands.MissingRequiredArgument):
-        embed = discord.Embed(
-            title="lockdown",
-            description="To use the lockdown command just use it",
-            color=discord.Color.blue()
-        )
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.add_field(name="Usage", value="lockdown")
-        await ctx.send(embed=embed)
     else:
         print(F"lockdown Error {error}")

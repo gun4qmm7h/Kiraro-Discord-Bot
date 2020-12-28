@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Kiraro import bot, Cooldown
+from Kiraro import bot, Cooldown, rand_xp
 import json
 import time
 
@@ -28,7 +28,7 @@ async def on_message(message):
                     for x in test['users']:
                         if x["name"] == str(message.author.mention):
                             x['message'] += 1
-                            x['xp'] += 3
+                            x['xp'] += rand_xp
                             if x['xp'] >= x['next_xp']:
                                 x['xp'] = (x['xp'] - x['next_xp'])
                                 x['next_xp'] += 100
@@ -40,7 +40,7 @@ async def on_message(message):
                     if new_user:
                         test['users'].append({
                             'name': str(message.author.mention),
-                            'xp': 3,
+                            'xp': rand_xp,
                             'next_xp': 100,
                             'level': 0,
                             'message': 1
@@ -50,7 +50,7 @@ async def on_message(message):
                     test = rank[str(message.guild.id)]
                     test['users'].append({
                         'name': str(message.author.mention),
-                        'xp': 3,
+                        'xp': rand_xp,
                         'next_xp': 100,
                         'level': 0,
                         'message': 1
@@ -65,32 +65,21 @@ async def on_message(message):
 async def on_voice_state_update(member, before, after):
     with open("Files/Stop_Start_Rank.json") as f:
         stop_start = json.load(f)
-    server = stop_start[str(member.guild.id)]
-    if server["voice"]:
+    server_stop_start = stop_start[str(member.guild.id)]
+    if server_stop_start["voice"]:
         if not member.bot:
             with open("Files/VoiceRanking.json", "r") as f:
                 rank = json.load(f)
             in_channel = before.channel and after.channel
             if not before.channel:
-                try:
-                    server = rank[str(member.guild.id)]
-                    new_user = True
-                    for x in server['users']:
-                        if x["name"] == str(member.mention):
-                            x['time'] = time.time()
-                            new_user = False
-                            break
-                    if new_user:
-                        server['users'].append({
-                            'name': str(member.mention),
-                            'time_sec': 0,
-                            'time': time.time(),
-                            'hours': 0,
-                            'seconds': 0
-                        })
-                except KeyError:
-                    rank[str(member.guild.id)] = {"users": []}
-                    server = rank[str(member.guild.id)]
+                server = rank[str(member.guild.id)]
+                new_user = True
+                for x in server['users']:
+                    if x["name"] == str(member.mention):
+                        x['time'] = time.time()
+                        new_user = False
+                        break
+                if new_user:
                     server['users'].append({
                         'name': str(member.mention),
                         'time_sec': 0,
@@ -98,6 +87,10 @@ async def on_voice_state_update(member, before, after):
                         'hours': 0,
                         'seconds': 0
                     })
+            """
+            if the users is not log in the voice rank and they are in a call when a bot is started they will not 
+            be ranked and will need to leave and join back to be log for voice rank
+            """
             server = rank[str(member.guild.id)]
             for x in server['users']:
                 if x["name"] == str(member.mention):
