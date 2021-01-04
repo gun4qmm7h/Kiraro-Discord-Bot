@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from Kiraro import bot, get_sec
+from Kiraro import bot
+from Kiraro.Kiraro_Text import get_sec
 import json
 import asyncio
 
@@ -12,9 +13,9 @@ async def mute_role(ctx, name=None, role_color=discord.Color.default()):
         with open("Files/Mute.json") as f:
             Mute = json.load(f)
         role = Mute[str(ctx.guild.id)]
+        await ctx.send("Updating the channels")
         for roles in ctx.guild.roles:
             if roles.id == role:
-                # break on the role so roles is rolex
                 break
         num = 0
         for channel in ctx.guild.channels:
@@ -32,6 +33,7 @@ async def mute_role(ctx, name=None, role_color=discord.Color.default()):
                     num += 1
         await ctx.send(F"I have updated {num} channels")
     except KeyError:
+        await ctx.send("Give me some time to make the role")
         if not bool(name):
             raise commands.BadArgument
         roles = await ctx.guild.create_role(name=name, color=role_color)
@@ -95,7 +97,7 @@ async def mute(ctx, user: discord.Member, time_mute=None):
         await ctx.send("mute role is not set. To set it use the command `mute_role`")
     else:
         await user.add_roles(roles)
-        embed = discord.Embed(title="User Muted!", description=F"**{user}** was muted by **{ctx.author}**!",
+        embed = discord.Embed(title="User Muted!", description=F"**{user.mention}** was muted by **{ctx.author.mention}**!",
                               color=discord.Color.blue())
         if bool(time_mute) and get_sec(time_mute):
             embed.add_field(name="Time", value=F"{user} will be unmuted in {time_mute}")
@@ -148,7 +150,7 @@ async def unmute(ctx, user: discord.Member):
             await user.remove_roles(roles)
             embed = discord.Embed(title=" ", color=0x006eff)
             embed.set_author(name=F"{ctx.author.name}", icon_url=ctx.author.avatar_url)
-            embed.add_field(name="User Unmuted", value=F"{user} was unmuted by {ctx.author}", inline=False)
+            embed.add_field(name="User Unmuted", value=F"{user.mention  } was unmuted by {ctx.author.mention}", inline=False)
             await ctx.send(embed=embed)
         else:
             embed = discord.Embed(title=" ", color=0x006eff)

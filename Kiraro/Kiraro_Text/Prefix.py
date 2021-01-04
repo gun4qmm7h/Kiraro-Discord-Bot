@@ -34,8 +34,8 @@ async def prefix_error(ctx, error):
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
     elif isinstance(error, commands.MissingRequiredArgument):
-        with open("Files/Prefix.json", "r") as prefix:
-            prefixes = json.load(prefix)
+        with open("Files/Prefix.json", "r") as f:
+            prefixes = json.load(f)
 
         prefix = prefixes.get(str(ctx.guild.id))
         if isinstance(error, commands.MissingRequiredArgument):

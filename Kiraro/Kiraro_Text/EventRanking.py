@@ -1,6 +1,5 @@
-import discord
-from discord.ext import commands
-from Kiraro import bot, Cooldown, rand_xp
+from Kiraro.Kiraro_Text import Cooldown, rand_xp
+from Kiraro import bot
 import json
 import time
 
@@ -13,20 +12,22 @@ async def on_message(message):
         with open("Files/Prefix.json") as f:
             prefixes = json.load(f)
         prefix = prefixes.get(str(message.guild.id))
+        if prefix is None:
+            prefix = ">"
         await channel.send(F"***My prefix is*** `{prefix}`")
     with open("Files/Stop_Start_Rank.json") as f:
         stop_start = json.load(f)
     server = stop_start[str(message.guild.id)]
     if server["text"]:
         if not message.author.bot:
-            if await Cooldown(message, 5):
+            if await Cooldown(message, 60):
                 with open("Files/TextRanking.json", "r") as f:
                     rank = json.load(f)
                 try:
                     test = rank[str(message.guild.id)]
                     new_user = True
                     for x in test['users']:
-                        if x["name"] == str(message.author.mention):
+                        if x["name"] == str(message.author.id):
                             x['message'] += 1
                             x['xp'] += rand_xp
                             if x['xp'] >= x['next_xp']:
@@ -39,7 +40,7 @@ async def on_message(message):
                             break
                     if new_user:
                         test['users'].append({
-                            'name': str(message.author.mention),
+                            'name': str(message.author.id),
                             'xp': rand_xp,
                             'next_xp': 100,
                             'level': 0,
@@ -49,7 +50,7 @@ async def on_message(message):
                     rank[str(message.guild.id)] = {"users": []}
                     test = rank[str(message.guild.id)]
                     test['users'].append({
-                        'name': str(message.author.mention),
+                        'name': str(message.author.id),
                         'xp': rand_xp,
                         'next_xp': 100,
                         'level': 0,
@@ -75,13 +76,13 @@ async def on_voice_state_update(member, before, after):
                 server = rank[str(member.guild.id)]
                 new_user = True
                 for x in server['users']:
-                    if x["name"] == str(member.mention):
+                    if x["name"] == str(member.id):
                         x['time'] = time.time()
                         new_user = False
                         break
                 if new_user:
                     server['users'].append({
-                        'name': str(member.mention),
+                        'name': str(member.id),
                         'time_sec': 0,
                         'time': time.time(),
                         'hours': 0,
@@ -93,7 +94,7 @@ async def on_voice_state_update(member, before, after):
             """
             server = rank[str(member.guild.id)]
             for x in server['users']:
-                if x["name"] == str(member.mention):
+                if x["name"] == str(member.id):
                     if before.channel and not after.channel:
                         if x['time'] != 0:
                             x['time_sec'] = abs(x['time'] - time.time()) + x['time_sec']
@@ -105,6 +106,9 @@ async def on_voice_state_update(member, before, after):
                     elif in_channel and member.voice.deaf or member.voice.self_deaf or member.voice.mute or member.voice.self_mute or member.voice.afk:
                         if x['time'] != 0:
                             x["time_sec"] = abs(x['time'] - time.time()) + x['time_sec']
+                            while x['time_sec'] >= (3600 * (x['hours'] + 1)):
+                                x['hours'] += 1
+                                x['time_sec'] -= 3600
                             x['time'] = 0
                     elif in_channel and before.deaf or before.self_deaf or before.mute or before.self_mute or before.afk:
                         x['time'] = time.time()

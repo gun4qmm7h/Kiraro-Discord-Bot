@@ -6,7 +6,7 @@ import discord
 @commands.has_permissions(administrator=True)
 async def lockdown(ctx):
     ow = ctx.channel.overwrites_for(ctx.guild.default_role)
-    if ow.send_messages:
+    if ow.send_messages or ow.send_messages is None:
         perms = ctx.channel.overwrites_for(ctx.guild.default_role)
         perms.send_messages = False
         await ctx.channel.set_permissions(ctx.guild.default_role, overwrite=perms)

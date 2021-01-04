@@ -1,15 +1,26 @@
 import discord
 from discord.ext import commands
-from Kiraro import bot, hash_lib
+from Kiraro.Kiraro_Text import hash_lib
+from Kiraro import bot
 import json
 import asyncio
+
 
 
 @bot.command(aliases=['del_rank', 'delrank', 'remove_rank'])
 @commands.has_permissions(administrator=True)
 async def delete_rank(ctx, ranking):
+
+    def check(m):
+        return m.author == ctx.author
+
     if ranking.lower() in ["text", "txt", "t"]:
-        await ctx.send("Are you sure you what to delete text rank? [y(es)/n(o)]")
+        embed = discord.Embed(color=0xff0000)
+        embed.add_field(name="Delete Text Ranks",
+                        value="Are you sure you want to delete the text ranks. Once you do this there is no going back.",
+                        inline=False)
+        embed.set_footer(text="Type yes to delete all text ranks, type no to abort.")
+        await ctx.send(embed=embed)
 
         def check(m):
             return m.author == ctx.author
@@ -23,7 +34,12 @@ async def delete_rank(ctx, ranking):
                 text.pop(str(ctx.guild.id))
                 with open("Files/TextRanking.json", "w") as f:
                     json.dump(text, f, indent=4)
-                await ctx.send("Text rank removed")
+                embed = discord.Embed(color=0x04ff00)
+                embed.add_field(name="Delete Text Ranks Successful", value="All Text ranks have been deleted",
+                                inline=False)
+                embed.set_footer(text=f"{ctx.author.name} has deleted all text ranks")
+                await ctx.send(embed=embed)
+
             elif msg.content.lower() in ['n', 'no']:
                 await ctx.send("Not delete the text rank")
             else:
@@ -33,7 +49,12 @@ async def delete_rank(ctx, ranking):
 
 
     elif ranking.lower() in ["voice", "vc", "v"]:
-        await ctx.send("Are you sure you what to delete voice rank? [y(es)/n(o)]")
+        embed = discord.Embed(color=0xff0000)
+        embed.add_field(name="Delete Voice Ranks",
+                        value="Are you sure you want to delete the voice ranks. Once you do this there is no going back",
+                        inline=False)
+        embed.set_footer(text="Type yes to delete all voice ranks, type no to abort.")
+        await ctx.send(embed=embed)
 
         try:
             msg = await bot.wait_for('message', check=check, timeout=20)
@@ -44,14 +65,18 @@ async def delete_rank(ctx, ranking):
                 text.pop(str(ctx.guild.id))
                 with open("Files/VoiceRanking.json", "w") as f:
                     json.dump(text, f, indent=4)
-                await ctx.send("Voice rank removed")
+                embed = discord.Embed(color=0x04ff00)
+                embed.add_field(name="Delete Voice Ranks Successful", value="All voice ranks have been deleted",
+                                inline=False)
+                embed.set_footer(text=f"{ctx.author.name} has deleted all voice ranks")
+                await ctx.send(embed=embed)
+
             elif msg.content.lower() in ['n', 'no']:
                 await ctx.send("Not removing the voice rank!")
             else:
                 await ctx.send("I did not understand that, aborting!")
         except asyncio.TimeoutError:
             await ctx.send("Looks like you waited to long.")
-
 
 
 
@@ -82,18 +107,55 @@ async def delete_rank_error(ctx, error):
 
 @bot.command(aliases=['del_warnings', 'delwarnings', 'remove_warnings'])
 @commands.has_permissions(ban_members=True, kick_members=True)
-async def delete_warnings(ctx, user: discord.Member, *, reason: int = None):
+async def delete_warnings(ctx, user: discord.Member, reason: int = None):
+
+    def check(m):
+        return m.author == ctx.author
+
     with open("Files/warning.json") as f:
         report = json.load(f)
+    if bool(report.get(str(ctx.guild.id))) or report.get(str(ctx.guild.id)) is None:
+        return
     server = report[str(ctx.guild.id)]
     for x in server['users']:
-        if x["name"] == hash_lib(str(user.mention)):
+        if x["name"] == hash_lib(str(user.id)):
+            break
+
+    embed = discord.Embed(color=0xff0000)
+    embed.add_field(name="Delete Warnings",
+                    value=F"Are you sure you want to remove {user.mention} warning",
+                    inline=False)
+    embed.add_field(name="**Warnings**", value=F"Reasons: {x['reasons'][reason-1]} \n"
+                                               F"Times: {x['times']}")
+    embed.set_footer(text=F"Type yes to delete {user.name} warnings, type no to abort.")
+    await ctx.send(embed=embed)
+
+    try:
+        msg = await bot.wait_for('message', check=check, timeout=20)
+
+        if msg.content.lower() in ['y', 'yes']:
+
+            embed = discord.Embed(color=0xff0000)
+            embed.add_field(name="Delete Warnings Successful",
+                            value="The warnings have been deleted",
+                            inline=False)
+            embed.add_field(name="**Warnings**", value=F"Reasons: {x['reasons'][reason - 1]} \n"
+                                                       F"Times: {x['times']}")
+            embed.set_footer(text=f"{ctx.author.name} has deleted {user.name} warnings")
+            await ctx.send(embed=embed)
             x["reasons"].pop(reason-1)
             x["times"] -= 1
             with open("Files/warning.json", "w") as f:
                 json.dump(report, f, indent=4)
-            await ctx.send(
-                f"I have remove {user.mention} warning, time: {x['times']}, reasons: {', '.join(x['reasons'])}")
+
+        elif msg.content.lower() in ['n', 'no']:
+            await ctx.send(F"Not deleting {user.mention} warnings")
+        else:
+            await ctx.send("I did not understand that, aborting!")
+    except asyncio.TimeoutError:
+        await ctx.send("Looks like you waited to long.")
+
+
 
 
 @delete_warnings.error

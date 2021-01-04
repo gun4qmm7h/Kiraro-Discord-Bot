@@ -1,5 +1,6 @@
 import discord
-from Kiraro import bot, TextRank, VoiceRank
+from Kiraro.Kiraro_Text import TextRank, VoiceRank
+from Kiraro import bot
 import json
 import time
 import asyncio
@@ -44,6 +45,8 @@ async def on_ready():
 
         if str(guild.id) not in text:
             text[str(guild.id)] = {}
+            text_rank = text[str(guild.id)]
+            text_rank.update({"users": []})
 
         if str(guild.id) not in voice:
             voice[str(guild.id)] = {}
@@ -74,13 +77,19 @@ async def on_ready():
             server = livelb[str(server_id)]
             if server["text"]:
                 try:
-                    await TextRank(server, server_id)
+                    lst_msg = server['txt_message']
+                    channel = await bot.fetch_channel(lst_msg[0])
+                    msg = await channel.fetch_message(lst_msg[1])
+                    await TextRank(server_id, msg, lst_msg[2])
                 except discord.errors.NotFound:
                     server.update({"text": False,
                                    "txt_message": []})
             if server["voice"]:
                 try:
-                    await VoiceRank(server, server_id)
+                    lst_msg = server['txt_message']
+                    channel = await bot.fetch_channel(lst_msg[0])
+                    msg = await channel.fetch_message(lst_msg[1])
+                    await VoiceRank(server_id, msg, lst_msg[2])
                 except discord.errors.NotFound:
                     server.update({"voice": False,
                                    "vc_message": []})
@@ -109,7 +118,7 @@ async def on_guild_join(guild):
 
     prefixes[str(guild.id)] = ">"
 
-    stop_start[str(ctx.guild.id)] = {}
+    stop_start[str(guild.id)] = {}
     server = stop_start[str(guild.id)]
     server.update({"text": True,
                    "voice": True})

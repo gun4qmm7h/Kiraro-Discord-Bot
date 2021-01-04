@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from Kiraro import bot, get_sec
+from Kiraro.Kiraro_Text import get_sec
+from Kiraro import bot
 import random
 import asyncio
 
@@ -23,8 +24,8 @@ async def giveaway(ctx, times, num_of_users, *, giveaway_msg=None):
     people = []
     for reaction in msg.reactions:
         async for user in reaction.users():
-            people.append(user.mention)
-    people.remove(bot.user.mention)
+            people.append(user.id)
+    people.remove(bot.user.id)
     all_winners = []
     if len(people) == 0:
         await ctx.send("No one reacted to the giveaway :(")
@@ -50,7 +51,7 @@ async def giveaway_error(ctx, error):
     elif isinstance(error, commands.MissingPermissions):
         embed = discord.Embed(
             title="Giveaway Error",
-            description="You are missing the **permission** `administrator`",
+            description="You are missing the **permission** `Administrator`",
             color=discord.Color.red()
         )
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
@@ -58,7 +59,7 @@ async def giveaway_error(ctx, error):
     elif isinstance(error, commands.MissingRequiredArgument):
         embed = discord.Embed(
             title="Giveaway",
-            description="To use the Giveaway command just add the time in %%d:%%h:%%m:%%s format and the message",
+            description="To use the Giveaway command just add the time and the message",
             color=discord.Color.blue()
         )
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)

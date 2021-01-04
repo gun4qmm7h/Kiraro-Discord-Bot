@@ -1,6 +1,6 @@
 import discord
-from discord.ext import commands
-from Kiraro import bot, is_us, version
+from Kiraro.Kiraro_Text import is_us, version
+from Kiraro import bot
 import json
 
 
@@ -65,6 +65,7 @@ async def aliases(ctx):
 {prefix}voice_rank= vc_rank, vrank, vc, voice
 {prefix}suggestions= suggest, sug
 {prefix}warnings= search, find, locate
+{prefix}delete_warnings = del_warnings, delwarnings, remove_warnings    
 {prefix}start_rank= Startr
 {prefix}stop_rank= Stopr
 ```
@@ -75,7 +76,7 @@ async def aliases(ctx):
 
 @bot.command()
 async def status_help(ctx):
-    if is_us(ctx.author.mention):
+    if is_us(ctx.author.id):
         with open("Files/Prefix.json", "r") as f:
             prefixes = json.load(f)
 
@@ -108,9 +109,9 @@ async def change_logs(ctx):
     embed = discord.Embed(
         title="Change Logs",
         description=F'''
-    Added a cool down to text ranking so a user only gets xp per text after 5 sec
-    Added a Change Log command (This)
-    Fix the text and voice ranking so they are more reliable
+fix lockdown not working the first time
+fix warnings not responding when no one on server was warned
+added server icon to leaderboard
     ***Version {version}***
     ''',
         color=discord.Color.blue())
