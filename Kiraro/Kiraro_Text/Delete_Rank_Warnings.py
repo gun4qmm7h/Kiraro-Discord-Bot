@@ -114,7 +114,7 @@ async def delete_warnings(ctx, user: discord.Member, reason: int = None):
 
     with open("Files/warning.json") as f:
         report = json.load(f)
-    if bool(report.get(str(ctx.guild.id))) or report.get(str(ctx.guild.id)) is None:
+    if not bool(report.get(str(ctx.guild.id))) or report.get(str(ctx.guild.id)) is None:
         return
     server = report[str(ctx.guild.id)]
     for x in server['users']:
@@ -125,8 +125,7 @@ async def delete_warnings(ctx, user: discord.Member, reason: int = None):
     embed.add_field(name="Delete Warnings",
                     value=F"Are you sure you want to remove {user.mention} warning",
                     inline=False)
-    embed.add_field(name="**Warnings**", value=F"Reasons: {x['reasons'][reason-1]} \n"
-                                               F"Times: {x['times']}")
+    embed.add_field(name="**Warnings**", value=F"Reasons: {x['reasons'][reason-1]} ")
     embed.set_footer(text=F"Type yes to delete {user.name} warnings, type no to abort.")
     await ctx.send(embed=embed)
 

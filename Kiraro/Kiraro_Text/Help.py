@@ -109,9 +109,8 @@ async def change_logs(ctx):
     embed = discord.Embed(
         title="Change Logs",
         description=F'''
-fix lockdown not working the first time
-fix warnings not responding when no one on server was warned
-added server icon to leaderboard
+
+
     ***Version {version}***
     ''',
         color=discord.Color.blue())

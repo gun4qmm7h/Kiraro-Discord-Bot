@@ -42,7 +42,7 @@ async def rank(ctx, user: discord.Member = None):
         lst = sorted(lst, reverse=True)
         num = 1
         for i in lst:
-            if name_dir[i] == str(user.id):
+            if str(name_dir[i]) == str(user.id):
                 rank_num = num
                 break
             num += 1
@@ -96,11 +96,12 @@ async def rank_error(ctx, error):
     else:
         print(F"Text Rank Error {error}")
 
+
 @bot.command(aliases=['vc_rank', 'vrank', 'vc', 'voice'])
 async def voice_rank(ctx, user: discord.Member = None):
     with open("Files/Stop_Start_Rank.json") as f:
         stop_start = json.load(f)
-    server = stop_start[str(message.guild.id)]
+    server = stop_start[str(ctx.guild.id)]
     if server["voice"]:
         if not bool(user):
             user = ctx.author

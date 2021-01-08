@@ -9,15 +9,17 @@ import json
 async def suggestions(ctx, *, suggestion):
     with open("Files/Suggestions.json", "r") as f:
         server = json.load(f)
-    await ctx.send("the message has been sent")
-    channel = bot.get_channel(server[str(ctx.guild.id)])
-    embed = discord.Embed(title=F"{ctx.author} has a suggestions for the server", description=suggestion,
-                          color=0x0080ff)
-    embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
-    msg = await channel.send(embed=embed)  # https://cog-creators.github.io/discord-embed-sandbox/
-    await msg.add_reaction("👍")
-    await msg.add_reaction("👎")
-
+    try:
+        channel = bot.get_channel(server[str(ctx.guild.id)])
+        embed = discord.Embed(title=F"{ctx.author} has a suggestions for the server", description=suggestion,
+                              color=0x0080ff)
+        embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
+        msg = await channel.send(embed=embed)  # https://cog-creators.github.io/discord-embed-sandbox/
+        await msg.add_reaction("👍")
+        await msg.add_reaction("👎")
+        await ctx.send("the message has been sent")
+    except KeyError:
+        await ctx.send("The suggestions has not been set up yet")
 
 @suggestions.error
 async def suggestions_error(ctx, error):
@@ -30,7 +32,7 @@ async def suggestions_error(ctx, error):
             color=discord.Color.blue()
         )
         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.add_field(name="Usage", value="suggestions `text or set`")
+        embed.add_field(name="Usage", value="Suggestions `text`")
         await ctx.send(embed=embed)
     elif isinstance(error, commands.CommandOnCooldown):
         await ctx.send(error)

@@ -59,9 +59,9 @@ async def live_Leaderboard(ctx, ranking, number: int = 10):
         with open("Files/Live_Leaderboard.json", "w") as f:
             json.dump(livelb, f, indent=4)
 
-    elif ranking.lower() == ["voice", "vc", "v"]:
+    elif ranking.lower() in ["voice", "vc", "v"]:
 
-        message = await VoiceRank(ctx.guild.id, ctx, live=True)
+        message, low_user, name_dir = await VoiceRank(ctx.guild.id, ctx, live=True)
 
         if low_user or len(name_dir) < 10:
             await ctx.send("I can't do top 10 because there isn't enough user ranked")

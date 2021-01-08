@@ -1,5 +1,5 @@
 import discord
-from Kiraro.Kiraro_Text import TextRank, VoiceRank
+from Kiraro.Kiraro_Text import TextRank, VoiceRank, version
 from Kiraro import bot
 import json
 import time
@@ -68,7 +68,7 @@ async def on_ready():
     with open("Files/VoiceRanking.json", "w") as f:
         json.dump(voice, f, indent=4)
 
-    print(F"Bot is ready as {bot.user}. Servers: {len(bot.guilds)}. Date: {time.asctime()}")
+    print(F"Bot is ready as {bot.user}. Servers: {len(bot.guilds)}. Date: {time.asctime()}. Version: {version}")
 
     while True:
         with open("Files/Live_Leaderboard.json") as f:
@@ -80,7 +80,7 @@ async def on_ready():
                     lst_msg = server['txt_message']
                     channel = await bot.fetch_channel(lst_msg[0])
                     msg = await channel.fetch_message(lst_msg[1])
-                    await TextRank(server_id, msg, lst_msg[2])
+                    await TextRank(server_id, msg, lst_msg[2], live=True)
                 except discord.errors.NotFound:
                     server.update({"text": False,
                                    "txt_message": []})
@@ -89,7 +89,7 @@ async def on_ready():
                     lst_msg = server['txt_message']
                     channel = await bot.fetch_channel(lst_msg[0])
                     msg = await channel.fetch_message(lst_msg[1])
-                    await VoiceRank(server_id, msg, lst_msg[2])
+                    await VoiceRank(server_id, msg, lst_msg[2], live=True)
                 except discord.errors.NotFound:
                     server.update({"voice": False,
                                    "vc_message": []})
@@ -130,11 +130,14 @@ async def on_guild_join(guild):
                       "txt_message": [],
                       "vc_message": []})
 
-    if str(guild.id) not in text:
-        text[str(guild.id)].update({str(guild.id): {}})
+    text[str(guild.id)] = {}
+    text_rank = text[str(guild.id)]
+    text_rank.update({"users": []})
 
-    if str(guild.id) not in voice:
-        voice[str(guild.id)].update({str(guild.id): {}})
+
+    voice[str(guild.id)] = {}
+    voice_rank = voice[str(guild.id)]
+    voice_rank.update({"users": []})
 
     with open("Files/Prefix.json", "w") as f:
         json.dump(prefixes, f, indent=4)

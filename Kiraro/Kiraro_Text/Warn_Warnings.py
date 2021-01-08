@@ -43,7 +43,7 @@ async def warn(ctx, user: discord.Member, *, reason=None):
                     f"You have been warn in the server {ctx.guild} reasons: {reason},you have been warned {x['times']}")
                 embed = discord.Embed(title=" ", color=0x006eff)
                 embed.set_author(name=F"{ctx.author.name}", icon_url=ctx.author.avatar_url)
-                embed.add_field(name="Warn", value=F"I have warned {user.mentionf} ", inline=False)
+                embed.add_field(name="Warn", value=F"I have warned {user.mention} ", inline=False)
                 embed.add_field(name="Reason", value=reason, inline=True)
                 await ctx.send(embed=embed)
                 break
@@ -84,7 +84,7 @@ async def warn_error(ctx, error):
 async def warnings(ctx, user: discord.Member):
     with open("Files/warning.json", "r") as f:
         report = json.load(f)
-    if bool(report.get(str(ctx.guild.id))) or report.get(str(ctx.guild.id)) is None:
+    if not bool(report.get(str(ctx.guild.id))) or report.get(str(ctx.guild.id)) is None:
         await ctx.send(f"{user.mention} has never been reported")
         return
     report = report[str(ctx.guild.id)]

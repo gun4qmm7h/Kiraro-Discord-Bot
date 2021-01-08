@@ -8,7 +8,7 @@ import time
 import random
 
 cooldown = {}
-version = 1.2
+version = 1.3
 rand_xp = random.randint(15, 25)
 xp_background = "Images/Xp_Background_With_Boarder.png"
 us = ["a50efa1b366f80c5cd918dc243591465", "b52e451e257acd4e5b900bc183f6a1a3",
@@ -127,7 +127,10 @@ async def TextRank(server_id, msg, number=10, live=False):
     msg_num = sorted(msg_num, reverse=True)
 
     num = 1
-    embed = discord.Embed(title="Text Rank Live Leaderboard", color=0x006eff)
+    if live:
+        embed = discord.Embed(title="Text Rank Live Leaderboard", color=0x006eff)
+    else:
+        embed = discord.Embed(title="Text Rank Leaderboard", color=0x006eff)
     embed.set_thumbnail(url=msg.guild.icon_url)
     for i in msg_num:
         user_id = ''.join([i for i in name_dir[i][0] if i.isdigit()])
@@ -137,8 +140,9 @@ async def TextRank(server_id, msg, number=10, live=False):
             low_user = True
             break
 
-        embed.add_field(name=F"__#{num}: <@{user_name.mention}>__",
-                        value=F"Level: {name_dir[i][2]}\n"
+        embed.add_field(name="ㅤ",  # This is a special space, normal ones won't work. Website: https://www.compart.com/en/unicode/U+3164
+                        value=F"**__#{num}: {user_name.mention} __**\n"
+                              F"Level: {name_dir[i][2]}\n"
                               F"Xp: {name_dir[i][1]}/{name_dir[i][3]}\n"
                               F"Message: {i}",
                         inline=False)
@@ -170,7 +174,10 @@ async def VoiceRank(server_id, msg, number=10, live=False):
     sec = sorted(sec, reverse=True)
 
     num = 1
-    embed = discord.Embed(title="Voice Rank Leaderboard", color=0x006eff)
+    if live:
+        embed = discord.Embed(title="Voice Rank Live Leaderboard", color=0x006eff)
+    else:
+        embed = discord.Embed(title="Voice Rank Leaderboard", color=0x006eff)
     embed.set_thumbnail(url=msg.guild.icon_url)
     for i in sec:
         user_id = ''.join([i for i in name_dir[i][0] if i.isdigit()])
@@ -179,8 +186,9 @@ async def VoiceRank(server_id, msg, number=10, live=False):
             low_user = True
             break
 
-        embed.add_field(name=F"__#{num}: <@{user_name.mention}>__",
-                        value=F"***Time***: {get_days(round(i))}",
+        embed.add_field(name="ㅤ",  # This is a special space, normal ones won't work. Website: https://www.compart.com/en/unicode/U+3164
+                        value=F"**__#{num}: {user_name.mention}__**\n"
+                              F"***Time***: {get_days(round(i))}",
                         inline=False)
 
         if num == number:
@@ -193,3 +201,8 @@ async def VoiceRank(server_id, msg, number=10, live=False):
     except AttributeError:
         message = await msg.send(embed=embed)
         return message, low_user, name_dir
+
+@bot.command()
+async def Invite(ctx):
+    await ctx.send("https://discord.com/api/oauth2/authorize?client_id=577231380392706049&permissions=8&scope=bot")
+    await asyncio.sleep(0.5)
