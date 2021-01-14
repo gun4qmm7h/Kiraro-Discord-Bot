@@ -19,7 +19,7 @@ async def giveaway(ctx, times, num_of_users, *, giveaway_msg=None):
     embed.set_footer(text="React to join the event")
     msg = await ctx.send(embed=embed)
     await msg.add_reaction("🎉")
-    await asyncio.sleep(get_sec(times))
+    await asyncio.sleep(await get_sec(times))
     msg = await msg.channel.fetch_message(msg.id)
     people = []
     for reaction in msg.reactions:
@@ -33,9 +33,10 @@ async def giveaway(ctx, times, num_of_users, *, giveaway_msg=None):
         people_num = len(people)
         for x in range(len(people)):
             winner = random.choice(people)
-            all_winners.append(winner)
+            all_winners.append(str(winner))
             people.remove(winner)
-        await ctx.send(F"{', '.join(all_winners)}, Not enough people reacted so the number will be off {people_num}/{num_of_users}")
+        await ctx.send(F"<@{', '.join(all_winners)}>, Not enough people reacted "
+                       F"so the number will be off {people_num}/{num_of_users}")
     else:
         for x in range(int(num_of_users)):
             winner = random.choice(people)

@@ -18,9 +18,3 @@ async def on_command_error(ctx, error):
             command[error] = 1
         with open("Files/Command_Error.json", "w") as f:
             json.dump(command, f, indent=4)
-    elif isinstance(error, commands.MissingRequiredArgument):
-        pass
-    elif isinstance(error, commands.MissingPermissions):
-        pass
-    else:
-        print(F"on_command_error {error}")

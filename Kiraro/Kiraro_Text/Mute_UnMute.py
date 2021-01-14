@@ -14,37 +14,39 @@ async def mute_role(ctx, name=None, role_color=discord.Color.default()):
             Mute = json.load(f)
         role = Mute[str(ctx.guild.id)]
         await ctx.send("Updating the channels")
-        for roles in ctx.guild.roles:
-            if roles.id == role:
-                break
+        roles = discord.utils.get(ctx.guild.roles, id=role)
         num = 0
         for channel in ctx.guild.channels:
             ow = channel.overwrites_for(roles)
-            if ow.send_messages is None and ow.speak is None:
+            if ow.send_messages is None and ow.speak is None and ow.stream is None and ow.attach_files is None:
                 if str(channel.type) == "text":
                     perms = channel.overwrites_for(roles)
                     perms.send_messages = False
+                    perms.attach_files = False
                     await channel.set_permissions(roles, overwrite=perms)
                     num += 1
                 elif str(channel.type) == "voice":
                     perms = channel.overwrites_for(roles)
                     perms.speak = False
+                    perms.stream = False
                     await channel.set_permissions(roles, overwrite=perms)
                     num += 1
-        await ctx.send(F"I have updated {num} channels")
-    except KeyError:
-        await ctx.send("Give me some time to make the role")
+        await ctx.send(F"I have updated {num} channels for the role `{roles}`")
+    except KeyError or AttributeError:
         if not bool(name):
             raise commands.BadArgument
+        await ctx.send("Give me some time to make the role")
         roles = await ctx.guild.create_role(name=name, color=role_color)
         for channel in ctx.guild.channels:
             if str(channel.type) == "text":
                 perms = channel.overwrites_for(roles)
                 perms.send_messages = False
+                perms.attach_files = False
                 await channel.set_permissions(roles, overwrite=perms)
             elif str(channel.type) == "voice":
                 perms = channel.overwrites_for(roles)
                 perms.speak = False
+                perms.stream = False
                 await channel.set_permissions(roles, overwrite=perms)
         with open("Files/Mute.json") as f:
             Mute = json.load(f)
@@ -54,31 +56,31 @@ async def mute_role(ctx, name=None, role_color=discord.Color.default()):
         await ctx.send(F"The role `{name}` has been created")
 
 
-@mute_role.error
-async def mute_role_error(ctx, error):
-    if isinstance(error, discord.HTTPException):
-        await ctx.send("Something went wrong, try again later")
-    elif isinstance(error, commands.MissingPermissions):
-        embed = discord.Embed(
-            title="Role Error",
-            description="You are missing the **permission** `Manage Messages`",
-            color=discord.Color.red()
-        )
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed)
-    elif isinstance(error, commands.BadArgument):
-        await ctx.send("Seems like we don't have that color or you didn't enter a name")
-    elif isinstance(error, commands.MissingRequiredArgument):
-        embed = discord.Embed(
-            title="Role",
-            description="To use the Role command just add a name and color",
-            color=discord.Color.blue()
-        )
-        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-        embed.add_field(name="Usage", value="Role `name` `color`")
-        await ctx.send(embed=embed)
-    else:
-        print(F"mute Error {error}")
+# @mute_role.error
+# async def mute_role_error(ctx, error):
+#     if isinstance(error, discord.HTTPException):
+#         await ctx.send("Something went wrong, try again later")
+#     elif isinstance(error, commands.MissingPermissions):
+#         embed = discord.Embed(
+#             title="Role Error",
+#             description="You are missing the **permission** `Manage Messages`",
+#             color=discord.Color.red()
+#         )
+#         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+#         await ctx.send(embed=embed)
+#     elif isinstance(error, commands.BadArgument):
+#         await ctx.send("Seems like we don't have that color or you didn't enter a name")
+#     elif isinstance(error, commands.MissingRequiredArgument):
+#         embed = discord.Embed(
+#             title="Role",
+#             description="To use the Role command just add a name and color",
+#             color=discord.Color.blue()
+#         )
+#         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+#         embed.add_field(name="Usage", value="Role `name` `color`")
+#         await ctx.send(embed=embed)
+#     else:
+#         print(F"mute Error {error}")
 
 
 @bot.command(aliases=['Timeout'])
@@ -99,10 +101,10 @@ async def mute(ctx, user: discord.Member, time_mute=None):
         await user.add_roles(roles)
         embed = discord.Embed(title="User Muted!", description=F"**{user.mention}** was muted by **{ctx.author.mention}**!",
                               color=discord.Color.blue())
-        if bool(time_mute) and get_sec(time_mute):
+        if bool(time_mute) and await get_sec(time_mute):
             embed.add_field(name="Time", value=F"{user} will be unmuted in {time_mute}")
             await ctx.send(embed=embed)
-            await asyncio.sleep(get_sec(time_mute))
+            await asyncio.sleep(await get_sec(time_mute))
             await user.remove_roles(roles)
         else:
             await ctx.send(embed=embed)

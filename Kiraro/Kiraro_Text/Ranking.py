@@ -59,8 +59,8 @@ async def rank(ctx, user: discord.Member = None):
         text_size = draw.textsize(name, font=font1)
 
         draw.line(coords, width=W, fill=COLOR)
-        circle(draw, (coords[0], coords[1]), W / 2, COLOR)
-        circle(draw, (coords[2], coords[3]), W / 2, COLOR)
+        await circle(draw, (coords[0], coords[1]), W / 2, COLOR)
+        await circle(draw, (coords[2], coords[3]), W / 2, COLOR)
 
         score = F"{human_format(xp)}/{human_format(next_xp)}"
         rank_num = F'#{human_format(rank_num)}'
@@ -156,8 +156,8 @@ async def voice_rank(ctx, user: discord.Member = None):
         text_size = draw.textsize(name, font=font1)
 
         draw.line(coords, width=W, fill=COLOR)
-        circle(draw, (coords[0], coords[1]), W / 2, COLOR)
-        circle(draw, (coords[2], coords[3]), W / 2, COLOR)
+        await circle(draw, (coords[0], coords[1]), W / 2, COLOR)
+        await circle(draw, (coords[2], coords[3]), W / 2, COLOR)
 
         score = F"{get_hours(xp)}/{get_hours(next_xp)}"
         rank_num = F'#{human_format(rank_num)}'
@@ -208,7 +208,7 @@ async def stop_rank(ctx, string):
         with open("Files/Stop_Start_Rank.json", "w") as f:
             json.dump(stop_start, f, indent=4)
         await ctx.send("The Text ranking will be stopped")
-    elif string.lower() in ["voice", "vc" "v"]:
+    elif string.lower() in ["voice", "vc", "v"]:
         with open("Files/Stop_Start_Rank.json") as f:
             stop_start = json.load(f)
 

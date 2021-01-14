@@ -118,7 +118,7 @@ async def delete_warnings(ctx, user: discord.Member, reason: int = None):
         return
     server = report[str(ctx.guild.id)]
     for x in server['users']:
-        if x["name"] == hash_lib(str(user.id)):
+        if x["name"] == await hash_lib(str(user.id)):
             break
 
     embed = discord.Embed(color=0xff0000)

@@ -76,7 +76,7 @@ async def aliases(ctx):
 
 @bot.command()
 async def status_help(ctx):
-    if is_us(ctx.author.id):
+    if await is_us(ctx.author.id):
         with open("Files/Prefix.json", "r") as f:
             prefixes = json.load(f)
 

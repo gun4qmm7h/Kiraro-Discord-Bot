@@ -9,7 +9,7 @@ import discord
 
 @bot.command()
 async def KILL(ctx):
-    if is_us(ctx.author.id):
+    if await is_us(ctx.author.id):
         print(ctx.author, "Has attempt to stopped the Bot")
 
         embed = discord.Embed(color=0xffdd00)

@@ -8,14 +8,14 @@ import time
 import random
 
 cooldown = {}
-version = 1.3
+version = 1.5
 rand_xp = random.randint(15, 25)
 xp_background = "Images/Xp_Background_With_Boarder.png"
 us = ["a50efa1b366f80c5cd918dc243591465", "b52e451e257acd4e5b900bc183f6a1a3",
       "044320cd00a21e589a2579c6e3365d3e"]  # Mark, Jake, Jawad
 
 
-def hash_lib(string):
+async def hash_lib(string):
     hash_name = hashlib.md5(str(string).encode())
     return hash_name.hexdigest()
 
@@ -44,7 +44,7 @@ def get_hours(sec):
         return F"{second}S"
 
 
-def get_days(sec):
+async def get_days(sec):
     day = sec // (24 * 3600)
     sec = sec % (24 * 3600)
     hour = sec // 3600
@@ -55,7 +55,7 @@ def get_days(sec):
     return F"{day}d, {hour}h, {minutes}m, {seconds}s"
 
 
-def get_sec(time_str):
+async def get_sec(time_str):
     try:
         sec1 = 0
         sec2 = 0
@@ -101,13 +101,13 @@ async def Cooldown(message, time_sleep):
         return True
 
 
-def is_us(user):
-    user = hash_lib(user)
+async def is_us(user):
+    user = await hash_lib(user)
     for x in range(len(us)):
         if user == us[x]:
             return True
 
-def circle(draws, center, radius, fill):
+async def circle(draws, center, radius, fill):
     draws.ellipse((center[0] - radius + 1, center[1] - radius + 1,
                    center[0] + radius - 1, center[1] + radius - 1), fill=fill, outline=None)
 

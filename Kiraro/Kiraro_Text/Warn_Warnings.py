@@ -10,34 +10,34 @@ import json
 async def warn(ctx, user: discord.Member, *, reason=None):
     report = json.load(open("Files/warning.json"))
     try:
-        test = report[str(ctx.guild.id)]
+        test = report[str(await hash_lib(ctx.guild.id))]
         new_user = True
         for x in test['users']:
-            if x["name"] == hash_lib(str(user.id)):
+            if x["name"] == await hash_lib(str(user.id)):
                 x['reasons'].append(str(reason))
                 x['times'] += 1
                 new_user = False
                 break
         if new_user:
             test['users'].append({
-                'name': hash_lib(str(user.id)),
+                'name': await hash_lib(str(user.id)),
                 'reasons': [str(reason)],
                 'times': 1
             })
     except KeyError:
-        report[str(ctx.guild.id)] = {"users": []}
-        test = report[str(ctx.guild.id)]
+        report[str(await hash_lib(ctx.guild.id))] = {"users": []}
+        test = report[str(await hash_lib(ctx.guild.id))]
         test['users'].append({
-            'name': hash_lib(str(user.id)),
+            'name': await hash_lib(str(user.id)),
             'reasons': [str(reason)],
             'times': 1
         })
     with open("Files/warning.json", "w") as f:
         json.dump(report, f, indent=4)
-    report = report[str(ctx.guild.id)]
+    report = report[str(await hash_lib(ctx.guild.id))]
     report = report['users']
     for x in report:
-        if x['name'] == hash_lib(str(user.id)):
+        if x['name'] == await hash_lib(str(user.id)):
             try:
                 await user.send(
                     f"You have been warn in the server {ctx.guild} reasons: {reason},you have been warned {x['times']}")
@@ -84,13 +84,13 @@ async def warn_error(ctx, error):
 async def warnings(ctx, user: discord.Member):
     with open("Files/warning.json", "r") as f:
         report = json.load(f)
-    if not bool(report.get(str(ctx.guild.id))) or report.get(str(ctx.guild.id)) is None:
+    if not bool(report.get(str(await hash_lib(ctx.guild.id)))) or report.get(str(await hash_lib(ctx.guild.id))) is None:
         await ctx.send(f"{user.mention} has never been reported")
         return
-    report = report[str(ctx.guild.id)]
+    report = report[str(await hash_lib(ctx.guild.id))]
     new_user = True
     for current_user in report['users']:
-        if hash_lib(str(user.id)) == current_user['name']:
+        if await hash_lib(str(user.id)) == current_user['name']:
             embed = discord.Embed(title=" ", color=0x006eff)
             embed.set_author(name=ctx.author.name, icon_url=ctx.author.avatar_url)
             for x in range(current_user['times']):
