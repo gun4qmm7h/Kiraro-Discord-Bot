@@ -2,6 +2,6 @@
 
 Welcome to Kiraro Discord Bot.
 
-_Website
+Website
 
 Coming soon
