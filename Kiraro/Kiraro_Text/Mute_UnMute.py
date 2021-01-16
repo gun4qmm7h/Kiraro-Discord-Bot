@@ -56,31 +56,31 @@ async def mute_role(ctx, name=None, role_color=discord.Color.default()):
         await ctx.send(F"The role `{name}` has been created")
 
 
-# @mute_role.error
-# async def mute_role_error(ctx, error):
-#     if isinstance(error, discord.HTTPException):
-#         await ctx.send("Something went wrong, try again later")
-#     elif isinstance(error, commands.MissingPermissions):
-#         embed = discord.Embed(
-#             title="Role Error",
-#             description="You are missing the **permission** `Manage Messages`",
-#             color=discord.Color.red()
-#         )
-#         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-#         await ctx.send(embed=embed)
-#     elif isinstance(error, commands.BadArgument):
-#         await ctx.send("Seems like we don't have that color or you didn't enter a name")
-#     elif isinstance(error, commands.MissingRequiredArgument):
-#         embed = discord.Embed(
-#             title="Role",
-#             description="To use the Role command just add a name and color",
-#             color=discord.Color.blue()
-#         )
-#         embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
-#         embed.add_field(name="Usage", value="Role `name` `color`")
-#         await ctx.send(embed=embed)
-#     else:
-#         print(F"mute Error {error}")
+@mute_role.error
+async def mute_role_error(ctx, error):
+    if isinstance(error, discord.HTTPException):
+        await ctx.send("Something went wrong, try again later")
+    elif isinstance(error, commands.MissingPermissions):
+        embed = discord.Embed(
+            title="Role Error",
+            description="You are missing the **permission** `Manage Messages`",
+            color=discord.Color.red()
+        )
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
+    elif isinstance(error, commands.BadArgument):
+        await ctx.send("Seems like we don't have that color or you didn't enter a name")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        embed = discord.Embed(
+            title="Role",
+            description="To use the Role command just add a name and color",
+            color=discord.Color.blue()
+        )
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.add_field(name="Usage", value="Role `name` `color`")
+        await ctx.send(embed=embed)
+    else:
+        print(F"mute Error {error}")
 
 
 @bot.command(aliases=['Timeout'])
