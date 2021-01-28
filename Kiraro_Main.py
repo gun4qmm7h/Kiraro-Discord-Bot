@@ -29,4 +29,3 @@ for files in dir_path_voice:
 
 # kiraro token
 bot.run('Token')
-NTc3MjMxMzgwMzkyNzA2MDQ5.XNiCnQ.toCHiUkzUjxthhN2u2smq2Z7R6Y
