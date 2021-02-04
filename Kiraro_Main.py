@@ -1,5 +1,5 @@
 """
-Author: Jawad
+Author: Jawad, Jake
 Version: 1.5
 2020-01-14
 fix some bugs and working on Kiraro voice
