@@ -37,8 +37,15 @@ async def nsfw(ctx):
 
 @bot.command()
 async def joke(ctx):
-    response = json.loads(requests.get("https://tambalapi.herokuapp.com").text)
-    await ctx.send(content=response[random.randint(0, len(response) - 1)]["joke"])
+    with open("Files/Jokes.json") as f:
+        jokes = json.load(f)
+
+    randomJokes = random.choice(jokes)
+    embed = discord.Embed(color=discord.Color.purple())
+    embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+    embed.add_field(name="Title", value=randomJokes["title"], inline=False)
+    embed.add_field(name="Joke", value=randomJokes["body"], inline=False)
+    await ctx.send(embed=embed)
 
 
 @bot.command()
@@ -108,7 +115,7 @@ async def urban(ctx, *msg):
         await ctx.send('well thats... thats... thats weird i cant connect to urban dictionary please try again later')
 
         
-@bot.command(aliases=['8ball'])
+@bot.command(name='8ball')
 async def _8ball(ctx, *, question):
     responses = [
             "It is certain.",
@@ -136,3 +143,20 @@ async def _8ball(ctx, *, question):
     embed.add_field(name="Question", value=question, inline=False)
     embed.add_field(name="Answer", value=random.choice(responses), inline=True)
     await ctx.send(embed=embed)
+
+
+@_8ball.error
+async def _8ball_error(ctx, error):
+    if isinstance(error, discord.HTTPException):
+        await ctx.send("Something went wrong, try again later")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        embed = discord.Embed(
+            title="8ball",
+            description="To use the 8ball command add a question",
+            color=discord.Color.blue()
+        )
+        embed.set_author(name=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.add_field(name="Usage", value="8ball `question` ")
+        await ctx.send(embed=embed)
+    else:
+        print(F"8ball Error {error}")

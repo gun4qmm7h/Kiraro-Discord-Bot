@@ -1,6 +1,5 @@
 from Kiraro.Kiraro_Text import is_us
 from Kiraro import bot
-import webbrowser
 import sys
 import asyncio
 import discord
@@ -10,7 +9,7 @@ import discord
 @bot.command()
 async def KILL(ctx):
     if await is_us(ctx.author.id):
-        print(ctx.author, "Has attempt to stopped the Bot")
+        print(ctx.author, "Has attempt to stopped the Bot in", ctx.guild.name, ":", ctx.guild.id)
 
         embed = discord.Embed(color=0xffdd00)
         embed.add_field(name="Kill bot",
@@ -31,12 +30,12 @@ async def KILL(ctx):
                                 value="Looks like I wasn't wanted anymore :( ",
                                 inline=True)
                 embed.add_field(name=":(",
-                                value=f"Shutting down. Logging this command in Run log for you {ctx.author.name}",
+                                value=f"Shutting down. Logging this command in Run log for you {ctx.author.name}.",
                                 inline=False)
                 embed.set_footer(text="I wonder what I did wrong?")
                 await ctx.send(embed=embed)
 
-                print(ctx.author, "Has stopped the Bot")
+                print(ctx.author, "Has stopped the Bot in", ctx.guild.name, ":", ctx.guild.id)
                 sys.exit()
             elif msg.content.lower() in ['n', 'no']:
                 embed = discord.Embed(color=0x1eff00)
@@ -54,13 +53,3 @@ async def KILL(ctx):
                             inline=True)
             embed.set_footer(text="you took too long so I will abort the command and stay on")
             await ctx.send(embed=embed)
-
-
-# @bot.command()
-# async def troll(ctx):
-#     if is_us(ctx.author.id):
-#         num = 0
-#         while num <= 200:
-#             webbrowser.open_new("")
-#             num += 1
-#

@@ -5,7 +5,7 @@ import time
 import json
 
 
-version = 1.5
+version = 1.6
 
 # Loads the discord server id to the .json file
 def get_prefix(bot, message):

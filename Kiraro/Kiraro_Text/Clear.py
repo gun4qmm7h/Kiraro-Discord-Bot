@@ -6,7 +6,7 @@ import asyncio
 # Clears the messages
 @bot.command(aliases=['delete', 'c'])
 @commands.has_permissions(manage_messages=True)
-async def clear(ctx, amount: str):
+async def clear(ctx, amount):
     if amount.lower() == "all":
         await ctx.channel.purge(limit=None)
         msg = await ctx.send("All message has been deleted.")
@@ -16,7 +16,7 @@ async def clear(ctx, amount: str):
         await ctx.send("Deleting 0 message because you know, that's possible ")
     else:
         await ctx.channel.purge(limit=int(amount) + 1)
-        msg = await ctx.send(F"{amount} message has been deleted.")
+        msg = await ctx.send(F"`{amount}` message has been deleted.")
         await asyncio.sleep(1)
         await msg.delete()
 
@@ -45,4 +45,4 @@ async def clear_error(ctx, error):
         await ctx.send(embed=embed)
     else:
         print(F"Clear Error {error}")
-
+#

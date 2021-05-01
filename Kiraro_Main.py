@@ -1,8 +1,13 @@
 """
 Author: Jawad, Jake
-Version: 1.5
-2020-01-14
-fix some bugs and working on Kiraro voice
+Version: 1.6
+2021-02-04
+remove hash from warnings (thought it might cuz error with new features)
+added an embed for the user getting warned
+made a ping command
+made a user command that tell you about user information
+made some jokes command (e.x. meme, nsfw, joke, size, coin, givenum, urban, _8ball)
+made a poll command and a send command that sends embeds to a channel
 """
 
 import os
@@ -26,4 +31,4 @@ for files in os.listdir("Kiraro/Kiraro_Voice"):
 
 
 # Kiraro token
-bot.run('Token')
+bot.run('TOKEN')

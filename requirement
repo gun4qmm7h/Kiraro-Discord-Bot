@@ -1,0 +1,9 @@
+discord
+requests
+logger
+Pillow
+gTTS
+youtube_dl
+asyncio
+PyNaCl
+pyfiglet
